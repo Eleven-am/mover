@@ -10,19 +10,22 @@ export default function Execute (commands, options, bar) {
 }
 
 Execute.prototype.execCommands = async function () {
-    let command = this.commands[0];
-    await this.commands.shift();
-    let executed = await execCommand(command.command);
-    console.log(executed)
-    if (executed)
-        await execCommand('rm ' + this.options.source + '/' + command.item);
+    return new Promise(async resolve => {
+        let command = this.commands[0];
+        await this.commands.shift();
+        let executed = await execCommand(command.command);
+        if (executed)
+            await execCommand('rm ' + this.options.source + '/' + command.item);
 
-    if (this.commands.length)
-        setTimeout(async () => {
-            this.start += this.speed/300;
-            this.bar.update(this.start);
-            await this.execCommands();
-        })
+        if (this.commands.length > 0)
+            setTimeout(async () => {
+                this.start += this.speed/300;
+                this.bar.update(this.start);
+                resolve(await this.execCommands());
+            })
+        else
+            resolve(this.commands.length > 0)
+    })
 }
 
 Execute.prototype.move = async function () {

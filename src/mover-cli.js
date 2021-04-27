@@ -103,11 +103,11 @@ export async function cli(args){
         await bar.itemDone('probing files');
         await bar.startItem('converting files');
         let exec = await new Execute(commands, answers, bar);
-        await exec.execCommands();
+        let info = await exec.execCommands();
         await bar.itemDone('converting files');
         await bar.update(200/300);
         await bar.startItem('moving files with rclone');
-        console.log('out')
+        console.log(info)
         await exec.move();
         await bar.update(300/300);
         await bar.itemDone('moving files with rclone');
