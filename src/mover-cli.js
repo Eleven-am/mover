@@ -85,11 +85,10 @@ export async function cli(args){
         title: 'progress:',
         eta: true,
         percent: true,
-        items: 6
+        items: 5
     });
 
     let options = stringToArgs(args);
-    bar.startItem('confirming input');
     let {answers, handler} = await fixArgs(options);
 
     bar.startItem('moving files');
