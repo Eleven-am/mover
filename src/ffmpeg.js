@@ -64,6 +64,7 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let h264 = probe.video.every(item => item.codec_name === 'h264');
     let trueHD = probe.audio.some(item => item.codec_name === 'truehd');
 
+    console.log(h264, trueHD)
     if (!h264 || trueHD) {
         this.bar.show('skipping '+ file)
         return false;
