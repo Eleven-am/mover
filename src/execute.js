@@ -29,6 +29,7 @@ Execute.prototype.execCommands = async function () {
 
 Execute.prototype.move = async function () {
     let command  = 'rclone move ' + this.options.source + ' media: ' + this.options.destination;
+    console.log(command);
     return execCommand(command)
 }
 
