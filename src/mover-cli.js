@@ -96,17 +96,25 @@ export async function cli(args){
 
 
     if (data.info !== false) {
+        bar.itemDone('moving files');
         const ffmpeg = new Ffmpeg(data.files, bar);
         bar.startItem('probing files');
         let commands = await ffmpeg.probeFolder(answers);
+        bar.itemDone('probing files');
         bar.startItem('converting files');
         let exec = new Execute(commands, answers, bar);
         await exec.execCommands();
+        bar.itemDone('converting files');
         bar.update(200/300);
         bar.startItem('moving files with rclone');
         await exec.move();
         bar.update(300/300);
+        bar.itemDone('moving files with rclone');
         bar.startItem('done');
-        setTimeout( function() { terminal( '\n' ) ; process.exit() ; } , 200 ) ;
+        setTimeout( function() {
+            bar.itemDone('done');
+            terminal('\n');
+            process.exit();
+        } , 200 ) ;
     }
 }
