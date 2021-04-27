@@ -81,15 +81,15 @@ const fixArgs = async options => {
 }
 
 export async function cli(args){
+    let options = stringToArgs(args);
+    let {answers, handler} = await fixArgs(options);
+
     const bar = terminal.progressBar({
         title: 'progress:',
         eta: true,
         percent: true,
         items: 5
     });
-
-    let options = stringToArgs(args);
-    let {answers, handler} = await fixArgs(options);
 
     bar.startItem('moving files');
     let data = await handler.move(answers);
