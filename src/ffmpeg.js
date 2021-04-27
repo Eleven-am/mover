@@ -60,7 +60,9 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 }
 
 Ffmpeg.prototype.build = function (probe, file, length, options) {
-    let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + rename(file, dicDo) + ' ';
+    let commandFile = rename(file, dicDo)
+    console.log(commandFile)
+    let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + commandFile + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
     let trueHD = probe.audio.some(item => item.codec_name === 'truehd');
 
@@ -101,6 +103,5 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let output = file.replace(options.extension, 'mp4');
     output = options.source + '/ffmpeg/' + rename(output, dicDo);
     command += audio[0] + subtitle[0] + video[0] + video[1] + audio[1] + subtitle[1] + output;
-    console.log(command)
     return command;
 }
