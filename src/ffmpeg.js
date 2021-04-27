@@ -72,7 +72,7 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let audioMap = probe.audio.length > 1;
 
     let audio;
-    let video = ['-map 0:v', '-c:v ' + (h264 ? 'copy' : 'libx264') + ' '];
+    let video = ['-map 0:v ', '-c:v ' + (h264 ? 'copy' : 'libx264') + ' '];
 
     if (audioMap) {
         let indexes = probe.audio.filter(item => item.codec_name === 'aac' || item.codec_name === 'ac3').map(item => item.index);
