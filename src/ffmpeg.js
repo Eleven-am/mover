@@ -46,6 +46,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 
         probe = {audio, video, subtitles};
         let command = this.build(probe, item, length, options);
+        console.log(command)
         if (command !== false)
             commands.push({command, item});
 
