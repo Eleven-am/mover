@@ -22,7 +22,9 @@ Execute.prototype.execCommands = async function () {
 
 Execute.prototype.move = async function () {
     let command  = 'rclone move ' + this.options.source + '/ffmpeg media:' + this.options.destination;
-    return execCommand(command, this.bar)
+    let execute = await execCommand(command, this.bar);
+    if (execute)
+        return await execCommand('rm -r ' + this.options.source + '/ffmpeg', this.bar);
 }
 
 const execCommand = async (command, bar) => {

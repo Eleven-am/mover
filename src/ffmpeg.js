@@ -62,10 +62,8 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let commandFile = rename(file);
     let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + commandFile + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
-    let trueHD = probe.audio.some(item => item.codec_name === 'truehd');
 
-    console.log(h264, trueHD)
-    if (!h264 || trueHD) {
+    if (!h264) {
         this.bar.show('skipping '+ file)
         return false;
     }
