@@ -98,6 +98,6 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let subtitle = subCheck ? ['', '']: ['-map 0:s? ', '-c:s mov_text '];
     let output = file.replace(options.extension, 'mp4');
     output = options.source + '/ffmpeg/' + output;
-    command += video[0] + audio[0] + subtitle[0] + video[1] + audio[1] + subtitle[1] + output;
+    command += audio[0] + subtitle[0] + video[0] + video[1] + audio[1] + subtitle[1] + output;
     return command;
 }
