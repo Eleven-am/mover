@@ -93,9 +93,9 @@ export async function cli(args){
     bar.update(0);
     bar.startItem('moving files');
     let data = await handler.move(answers);
-    bar.update(20/300);
 
     if (data.info !== false) {
+        bar.update(20/300);
         bar.itemDone('moving files');
         const ffmpeg = new Ffmpeg(data.files, bar);
         bar.startItem('probing files');
