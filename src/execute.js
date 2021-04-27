@@ -13,6 +13,7 @@ Execute.prototype.execCommands = async function () {
     let command = this.commands[0];
     await this.commands.shift();
     let executed = await execCommand(command.command);
+    console.log(executed)
     if (executed)
         await execCommand('rm ' + this.options.source + '/' + command.item);
 
