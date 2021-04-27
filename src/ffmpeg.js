@@ -49,6 +49,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
         if (command !== false)
             commands.push({command, item});
 
+        this.bar.show(probe);
         start += this.speed/300;
         this.bar.update(start);
     }
@@ -61,8 +62,10 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let h264 = probe.video.every(item => item.codec_name === 'h264');
     let trueHD = probe.audio.every(item => item.codec_name !== 'truehd');
 
-    if (!h264 || trueHD)
+    if (!h264 || trueHD) {
+        this.bar.show('skipping '+ file)
         return false;
+    }
 
     let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3');
     let subCheck = probe.subtitles.some(item => item.codec_name = 'hdmv_pgs_subtitle');

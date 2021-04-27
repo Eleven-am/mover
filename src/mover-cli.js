@@ -4,7 +4,7 @@ import path from 'path';
 import Handler from './move';
 import Ffmpeg from "./ffmpeg";
 import Execute from "./execute";
-const {terminal} = require( 'terminal-kit' );
+import Log from './logger';
 
 const stringToArgs = rawArgs => {
     const args = arg(
@@ -14,6 +14,8 @@ const stringToArgs = rawArgs => {
             '--folder': String,
             '--ext': String,
             '--move': Boolean,
+            '--verbose': Boolean,
+            '-v': '--verbose',
             '-m': '--move',
             '-e': '--ext',
             '-d': '--folder',
@@ -28,6 +30,7 @@ const stringToArgs = rawArgs => {
         directory: args['--directory'] || false,
         folder: args['--folder'] || false,
         move: args['--move'] || false,
+        verbose: args['--verbose'] || false,
         params: args['--params'],
     }
 }
@@ -37,6 +40,7 @@ const fixArgs = async options => {
     let answers = {};
     let handler = new Handler(options.directory);
     answers.move = options.move;
+    answers.verbose = options.verbose;
     answers.source = options.directory = await handler.confirm();
     while (options.directory === false || options.directory === 'file') {
         questions.push({
@@ -83,16 +87,12 @@ const fixArgs = async options => {
 export async function cli(args){
     let options = stringToArgs(args);
     let {answers, handler} = await fixArgs(options);
-    const bar = terminal.progressBar({
-        title: 'progress:',
-        eta: true,
-        percent: true,
-        items: 4
-    });
+    const bar = new Log(answers);
+    bar.show(answers)
 
     bar.update(0);
     bar.startItem('moving files');
-    let data = await handler.move(answers)
+    let data = await handler.move(answers, bar)
 
     if (data.info !== false) {
         await bar.update(20/300);
@@ -110,9 +110,6 @@ export async function cli(args){
         await exec.move();
         await bar.update(300/300);
         await bar.itemDone('moving files with rclone');
-        setTimeout( async function() {
-            terminal('\n');
-            await process.exit();
-        } , 200 ) ;
+        await bar.done()
     }
 }

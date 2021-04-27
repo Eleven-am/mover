@@ -11,9 +11,9 @@ export default function Execute (commands, options, bar) {
 
 Execute.prototype.execCommands = async function () {
     for await (let command of this.commands) {
-        let executed = await execCommand(command.command);
+        let executed = await execCommand(command.command, this.bar);
         if (executed)
-            await execCommand('rm ' + this.options.source + '/' + command.item);
+            await execCommand('rm ' + this.options.source + '/' + command.item, this.bar);
 
         this.start += this.speed/300;
         this.bar.update(this.start);
@@ -22,18 +22,19 @@ Execute.prototype.execCommands = async function () {
 
 Execute.prototype.move = async function () {
     let command  = 'rclone move ' + this.options.source + ' media:' + this.options.destination;
-    return execCommand(command)
+    return execCommand(command, this.bar)
 }
 
-const execCommand = async command => {
+const execCommand = async (command, bar) => {
     let params = command.split(' ');
     let host = params[0];
     params.shift();
+    bar.show(command);
     return new Promise(resolve => {
         const exec = spawn(host, params);
 
         exec.stderr.on('data', (data) => {
-            console.log(`${data}`);
+            bar.show(`${data}`);
             resolve(false);
         });
 

@@ -58,21 +58,22 @@ Handler.prototype.confirm = async function(){
     return false;
 }
 
-Handler.prototype.move = async function(options) {
-    let info = options.move ? await move(options, this.item): true;
+Handler.prototype.move = async function(options, bar) {
+    let info = options.move ? await move(options, this.item, bar): true;
     let files = await readdir(this.item);
     files = files.filter(item => item.charAt(0) !== '.');
     files = files.filter(item => item.endsWith(options.extension));
-    await this.createDir();
+    await this.createDir(bar);
     return {info, files};
 }
 
-Handler.prototype.createDir = async function () {
+Handler.prototype.createDir = async function (bar) {
     return new Promise(async (resolve) => {
         let exists = await this.exists(this.item + '/ffmpeg');
         if (!exists)
             fs.mkdir(this.item + '/ffmpeg', err => {
                 if (err) {
+                    bar.show(err)
                     resolve(false);
                 }
             })
@@ -81,7 +82,7 @@ Handler.prototype.createDir = async function () {
     })
 }
 
-const move = async function (options, item, hold) {
+const move = async function (options, item, bar, hold) {
     hold = hold || item;
     if (item !== false && item !== 'file'){
         let files = await readdir(item);
@@ -92,7 +93,7 @@ const move = async function (options, item, hold) {
             file = item + '/' + file
             const stat = await stats(file);
             if (!stat.isFile())
-                await move(options, file, hold);
+                await move(options, file, bar, hold);
             else
                 realFiles.push(file.replace(item, ''));
         }
@@ -114,16 +115,19 @@ const move = async function (options, item, hold) {
             }
 
             if (matches && realFiles.length === 1) {
+                bar.show('moving ' + realFile);
                 await renameFile(item + realFile, hold + realFile);
                 return true;
 
             } else {
                 if (item !== hold){
                     if (realFiles.length > 1) {
+                        bar.show(realFile + ' already in source directory');
                         return false;
 
                     } else {
-                        let base = path.basename(item)
+                        let base = path.basename(item);
+                        bar.show('moving ' + realFile);
                         await renameFile(item + realFile, hold + base + '.' + ext);
                         return true;
                     }
