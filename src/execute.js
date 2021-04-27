@@ -10,9 +10,9 @@ export default function Execute (commands, options, bar) {
 }
 
 Execute.prototype.execCommands = async function () {
+    console.log(this.commands)
     for await (let command of this.commands) {
         let executed = await execCommand(command.command, this.bar);
-        console.log(executed)
         if (executed)
             await execCommand('rm ' + this.options.source + '/' + command.item, this.bar);
 
