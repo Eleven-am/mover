@@ -64,9 +64,9 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
         return false;
 
     let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3');
+    let subCheck = probe.subtitles.some(item => item.codec_name = 'hdmv_pgs_subtitle');
     let audioMap = probe.audio.length > 1;
     let subMap = probe.subtitles.length > 1;
-    console.log(probe.subtitles)
 
     let audio;
     let video = '-c:v ' + (h264 ? 'copy' : 'libx264') + ' ';
@@ -93,7 +93,7 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     } else
         audio = probe.audio.length === length.audio ? ['', '-c:a aac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 aac '];
 
-    let subtitle = subMap ? ['-map 0:s? ', '-c:s mov_text ']: ['', '-c:s mov_text '];
+    let subtitle = subCheck ? ['', '']: subMap ? ['-map 0:s? ', '-c:s mov_text ']: ['', '-c:s mov_text '];
     let output = file.replace(options.extension, 'mp4');
     output = options.source + '/ffmpeg/' + output;
     command += video[0] + audio[0] + subtitle[0] + video[1] + audio[1] + subtitle[1] + output;
