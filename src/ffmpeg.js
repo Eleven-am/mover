@@ -1,6 +1,5 @@
 import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
-const dicDo = {" " : "\ ", "(" : "\(", ")" : "\)"};
 
 export default function Ffmpeg(folder, bar) {
     this.folder = folder;
@@ -59,7 +58,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 }
 
 Ffmpeg.prototype.build = function (probe, file, length, options) {
-    let commandFile = rename(file)
+    let commandFile = rename(file);
     let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + commandFile + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
     let trueHD = probe.audio.some(item => item.codec_name === 'truehd');
@@ -105,9 +104,10 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
 }
 
 const rename = string => {
-    for (let item in dicDo)
-        string = string.replace(new RegExp(item, 'g'), dicDo[item])
-
-    console.log(string)
+    string = string.replace(/ /g, '\\ ');
+    string = string.replace(/\[/g, '\\[');
+    string = string.replace(/]/g, '\\]');
+    string = string.replace(/\(/g, '\\(');
+    string = string.replace(/\)/g, '\\)');
     return string;
 }
