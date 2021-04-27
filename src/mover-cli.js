@@ -84,7 +84,7 @@ const fixArgs = async options => {
     return {answers, handler};
 }
 
-export async function cli(args){
+export async function cli(args) {
     let options = stringToArgs(args);
     let {answers, handler} = await fixArgs(options);
     const bar = new Log(answers);
@@ -95,21 +95,21 @@ export async function cli(args){
     let data = await handler.move(answers, bar)
 
     if (data.info !== false) {
-        await bar.update(20/300);
-        await bar.itemDone('moving files');
+        bar.update(20/300);
+        bar.itemDone('moving files');
         const ffmpeg = await new Ffmpeg(data.files, bar);
-        await bar.startItem('probing files');
+        bar.startItem('probing files');
         let commands = await ffmpeg.probeFolder(answers);
-        await bar.itemDone('probing files');
-        await bar.startItem('converting files');
+        bar.itemDone('probing files');
+        bar.startItem('converting files');
         let exec = await new Execute(commands, answers, bar);
         await exec.execCommands();
-        await bar.itemDone('converting files');
-        await bar.update(200/300);
-        await bar.startItem('moving files with rclone');
+        bar.itemDone('converting files');
+        bar.update(200/300);
+        bar.startItem('moving files with rclone');
         await exec.move();
-        await bar.update(300/300);
-        await bar.itemDone('moving files with rclone');
-        await bar.done()
+        bar.update(300/300);
+        bar.itemDone('moving files with rclone');
+        bar.done()
     }
 }

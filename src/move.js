@@ -51,19 +51,28 @@ Handler.prototype.confirm = async function(){
                 response = 'file';
             else
                 response = this.item.replace(/\/$/, '');
-        }
 
-        return response;
-    }
-    return false;
+        } return response;
+    } return false;
+}
+
+Handler.prototype.rename = async function (bar, options) {
+    await this.createDir(bar);
+    let files = await readdir(this.item);
+    files = files.filter(item => item.charAt(0) !== '.');
+    files = files.filter(item => item.endsWith(options.extension));
+
+    for (let item of files)
+        await renameFile(item, item.replace(/\s/, '.').replace(/-/, ''));
+
+    files = await readdir(this.item);
+    files = files.filter(item => item.charAt(0) !== '.');
+    return files.filter(item => item.endsWith(options.extension));
 }
 
 Handler.prototype.move = async function(options, bar) {
     options.move ? await move(options, this.item, bar): true;
-    let files = await readdir(this.item);
-    files = files.filter(item => item.charAt(0) !== '.');
-    files = files.filter(item => item.endsWith(options.extension));
-    await this.createDir(bar);
+    let files = await this.rename(bar, options);
     return {info: true, files};
 }
 
@@ -77,7 +86,6 @@ Handler.prototype.createDir = async function (bar) {
                     resolve(false);
                 }
             })
-
         resolve(true);
     })
 }
