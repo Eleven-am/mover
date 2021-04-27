@@ -127,7 +127,7 @@ const move = async function (options, item, bar, hold) {
                     } else {
                         let base = path.basename(item);
                         bar.show('moving ' + realFile);
-                        await renameFile(item + realFile, hold + base.replace(/\s+/g, '.').replace(/\[.*?]|-/g, '') + '.' + ext);
+                        await renameFile(item + realFile, hold + base.replace(/\[.*?]|-/g, '') + '.' + ext);
                         return true;
                     }
                 }
