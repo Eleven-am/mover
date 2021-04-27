@@ -59,8 +59,9 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 Ffmpeg.prototype.build = function (probe, file, length, options) {
     let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + file + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
+    let trueHD = probe.audio.every(item => item.codec_name !== 'truehd');
 
-    if (!h264)
+    if (!h264 || trueHD)
         return false;
 
     let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3');
