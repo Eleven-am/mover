@@ -57,7 +57,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 }
 
 Ffmpeg.prototype.build = function (probe, file, length, options) {
-    let command = 'ffmpeg -i -hide_banner ' + options.source + '/' + file + ' -loglevel error ';
+    let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + file + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
 
     if (!h264)
