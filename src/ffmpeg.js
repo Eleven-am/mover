@@ -70,11 +70,9 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3');
     let subCheck = probe.subtitles.some(item => item.codec_name = 'hdmv_pgs_subtitle');
     let audioMap = probe.audio.length > 1;
-    let subMap = probe.subtitles.length > 1;
 
     let audio;
-    let video = '-c:v ' + (h264 ? 'copy' : 'libx264') + ' ';
-    video = length.video === probe.video.length ? ['', video]: ['-map 0:v', video];
+    let video = ['-map 0:v', '-c:v ' + (h264 ? 'copy' : 'libx264') + ' '];
 
     if (audioMap) {
         let indexes = probe.audio.filter(item => item.codec_name === 'aac' || item.codec_name === 'ac3').map(item => item.index);
@@ -88,16 +86,16 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
             codec += '-c:a:' + i + ' copy ';
 
         for (let i = indexes.length; i < indexes.length + outIndexes.length; i++)
-            codec += '-c:a:' + i + ' aac ';
+            codec += '-c:a:' + i + ' libfaac ';
 
         audio = [map, codec];
     } else if (aacAc3) {
-        audio = probe.audio.length === length.audio ? ['', '-c:a copy '] : ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 copy '];
+        audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a copy '] : ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 copy '];
 
     } else
-        audio = probe.audio.length === length.audio ? ['', '-c:a aac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 aac '];
+        audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a libfaac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 libfaac '];
 
-    let subtitle = subCheck ? ['', '']: subMap ? ['-map 0:s? ', '-c:s mov_text ']: ['', '-c:s mov_text '];
+    let subtitle = subCheck ? ['', '']: ['-map 0:s? ', '-c:s mov_text '];
     let output = file.replace(options.extension, 'mp4');
     output = options.source + '/ffmpeg/' + output;
     command += video[0] + audio[0] + subtitle[0] + video[1] + audio[1] + subtitle[1] + output;
