@@ -60,9 +60,9 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 Ffmpeg.prototype.build = function (probe, file, length, options) {
     let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + file + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
-    let trueHD = probe.audio.every(item => item.codec_name !== 'truehd');
+    let trueHD = probe.audio.some(item => item.codec_name === 'truehd');
 
-    if (!h264 || !trueHD) {
+    if (!h264 || trueHD) {
         this.bar.show('skipping '+ file)
         return false;
     }
