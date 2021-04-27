@@ -66,6 +66,7 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3');
     let audioMap = probe.audio.length > 1;
     let subMap = probe.subtitles.length > 1;
+    console.log(probe.subtitles)
 
     let audio;
     let video = '-c:v ' + (h264 ? 'copy' : 'libx264') + ' ';
