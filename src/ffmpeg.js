@@ -22,7 +22,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
     let start = 20/300;
     for (let item of this.folder) {
         let file = options.source + '/' + item;
-        console.log(path.normalize(file))
+        console.log(path.parse(file))
         let probe = await this.probe(file);
         probe = probe.streams.map(stream => {
             return {
