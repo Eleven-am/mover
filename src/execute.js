@@ -38,7 +38,6 @@ const execCommand = async command => {
         const exec = spawn(host, params);
         exec.stderr.on('data', (data) => {
             console.log(`${data}`);
-            resolve(false)
         });
 
         exec.on('close', () => {
