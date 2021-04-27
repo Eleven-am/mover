@@ -90,6 +90,7 @@ export async function cli(args){
         items: 4
     });
 
+    bar.update(0);
     bar.startItem('moving files');
     let data = await handler.move(answers);
     bar.update(20/300);
