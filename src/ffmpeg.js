@@ -86,14 +86,14 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
             codec += '-c:a:' + i + ' copy ';
 
         for (let i = indexes.length; i < indexes.length + outIndexes.length; i++)
-            codec += '-c:a:' + i + ' libfaac ';
+            codec += '-c:a:' + i + ' aac ';
 
         audio = [map, codec];
     } else if (aacAc3) {
         audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a copy '] : ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 copy '];
 
     } else
-        audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a libfaac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 libfaac '];
+        audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a aac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 aac '];
 
     let subtitle = subCheck ? ['', '']: ['-map 0:s? ', '-c:s mov_text '];
     let output = file.replace(options.extension, 'mp4');
