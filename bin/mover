@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+require = require('esm')(module /*, options */);
+require('../src/mover-cli').cli(process.argv)
+    .catch(err => console.log(err));

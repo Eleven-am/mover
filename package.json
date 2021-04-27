@@ -1,0 +1,26 @@
+{
+  "name": "mover",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/mover-cli.js",
+  "bin": {
+    "mover": "bin/mover"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "arg": "^5.0.0",
+    "esm": "^3.2.25",
+    "execa": "^5.0.0",
+    "ffprobe": "^1.1.2",
+    "ffprobe-static": "^3.0.0",
+    "inquirer": "^8.0.0",
+    "listr": "^0.14.3",
+    "locutus": "^2.0.14",
+    "terminal-kit": "^2.0.7"
+  }
+}
