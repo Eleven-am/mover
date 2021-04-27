@@ -10,7 +10,7 @@ export default function Execute (commands, options, bar) {
 }
 
 Execute.prototype.execCommands = async function () {
-    return new Promise(async resolve => {
+    return new Promise(async function (resolve)  {
         let command = this.commands[0];
         await this.commands.shift();
         let executed = await execCommand(command.command);
