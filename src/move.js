@@ -63,7 +63,7 @@ Handler.prototype.rename = async function (bar, options) {
     files = files.filter(item => item.endsWith(options.extension));
 
     for (let item of files)
-        await renameFile(item, item.replace(/\s/, '.').replace(/-/, ''));
+        await renameFile(this.item +'/' + item, this.item + '/' +item.replace(/\s/, '.').replace(/-/, ''));
 
     files = await readdir(this.item);
     files = files.filter(item => item.charAt(0) !== '.');
