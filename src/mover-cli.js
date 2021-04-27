@@ -81,22 +81,30 @@ const fixArgs = async options => {
 }
 
 export async function cli(args){
-    let options = stringToArgs(args);
-    let {answers, handler} = await fixArgs(options);
     const bar = terminal.progressBar({
         title: 'progress:',
         eta: true,
-        percent: true
+        percent: true,
+        items: 6
     });
 
+    let options = stringToArgs(args);
+    bar.startItem('confirming input');
+    let {answers, handler} = await fixArgs(options);
+
+    bar.startItem('moving files');
     let data = await handler.move(answers);
-    bar.update(20/300)
 
     if (data.info !== false) {
-        const ffmpeg = new Ffmpeg(data.files, bar);
+        const ffmpeg = new Ffmpeg(data.files);
+        bar.startItem('probing files');
         let commands = await ffmpeg.probeFolder(answers);
-        let exec = new Execute(commands, answers, bar);
+        let exec = new Execute(commands, answers);
+        bar.startItem('converting files');
         await exec.execCommands();
-        bar.update(200/300);
+        bar.startItem('moving files');
+        await exec.move();
+        bar.startItem('done');
+        setTimeout( function() { terminal( '\n' ) ; process.exit() ; } , 200 ) ;
     }
 }
