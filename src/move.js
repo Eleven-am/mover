@@ -59,12 +59,12 @@ Handler.prototype.confirm = async function(){
 }
 
 Handler.prototype.move = async function(options, bar) {
-    let info = options.move ? await move(options, this.item, bar): true;
+    await move(options, this.item, bar);
     let files = await readdir(this.item);
     files = files.filter(item => item.charAt(0) !== '.');
     files = files.filter(item => item.endsWith(options.extension));
     await this.createDir(bar);
-    return {info, files};
+    return {info: true, files};
 }
 
 Handler.prototype.createDir = async function (bar) {
