@@ -72,6 +72,8 @@ Handler.prototype.rename = async function (bar, options) {
 
 Handler.prototype.move = async function(options, bar) {
     options.move ? await move(options, this.item, bar): true;
+    let string = 'move option is ' + (options.move ? '': 'de') + 'activated';
+    bar.show(string);
     let files = await this.rename(bar, options);
     return {info: true, files};
 }
