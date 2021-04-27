@@ -59,8 +59,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 }
 
 Ffmpeg.prototype.build = function (probe, file, length, options) {
-    let commandFile = rename(file);
-    let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + commandFile + ' ';
+    let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + file + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
 
     if (!h264) {
@@ -97,15 +96,8 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
         audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a libfdk_aac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 libfdk_aac '];
 
     let subtitle = subCheck ? ['', '']: ['-map 0:s? ', '-c:s mov_text '];
-    let output = commandFile.replace(options.extension, 'mp4');
+    let output = file.replace(options.extension, 'mp4');
     output = options.source + '/ffmpeg/' + output;
     command += audio[0] + subtitle[0] + video[0] + video[1] + audio[1] + subtitle[1] + output;
     return command;
-}
-
-const rename = string => {
-    string = string.replace(/ /g, '\\ ');
-    string = string.replace(/\[/g, '\\[');
-    string = string.replace(/]/g, '\\]');
-    return string;
 }

@@ -115,7 +115,7 @@ const move = async function (options, item, bar, hold) {
 
             if (matches && realFiles.length === 1) {
                 bar.show('moving ' + realFile);
-                await renameFile(item + realFile, hold + realFile.replace(/\[.*?]|-/g, ''));
+                await renameFile(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, ''));
                 return true;
 
             } else {
@@ -127,7 +127,7 @@ const move = async function (options, item, bar, hold) {
                     } else {
                         let base = path.basename(item);
                         bar.show('moving ' + realFile);
-                        await renameFile(item + realFile, hold + base.replace(/\[.*?]|-/g, '') + '.' + ext);
+                        await renameFile(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '') + '.' + ext);
                         return true;
                     }
                 }
