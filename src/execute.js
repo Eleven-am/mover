@@ -11,9 +11,14 @@ export default function Execute (commands, options, bar) {
 
 Execute.prototype.execCommands = async function () {
     for await (let command of this.commands) {
-        let executed = await execCommand(command.command, this.bar);
-        if (executed)
-            await execCommand('rm ' + this.options.source + '/' + command.item, this.bar);
+        if (this.options.extension === 'mp4' && command.item.endsWith('mp4'))
+            await execCommand('mv ' + this.options.source + '/' + command.item + ' ' + this.options.source + '/ffmpeg', this.bar);
+
+        else {
+            let executed = await execCommand(command.command, this.bar);
+            if (executed)
+                await execCommand('rm ' + this.options.source + '/' + command.item, this.bar);
+        }
 
         this.start += this.speed/300;
         this.bar.update(this.start);
