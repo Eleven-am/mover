@@ -71,7 +71,7 @@ const fixArgs = async options => {
             type: 'list',
             name: 'extension',
             message: 'please enter a filtered file extension',
-            choices: ['mkv', 'avi', 'mov'],
+            choices: ['mkv', 'mp4', 'avi', 'mov'],
             default: 'mkv'
         });
     else
