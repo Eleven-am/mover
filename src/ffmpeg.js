@@ -101,5 +101,6 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let output = file.replace(options.extension, 'mp4');
     output = options.source + '/ffmpeg/' + rename(output, dicDo);
     command += audio[0] + subtitle[0] + video[0] + video[1] + audio[1] + subtitle[1] + output;
+    console.log(command)
     return command;
 }
