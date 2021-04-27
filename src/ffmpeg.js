@@ -1,5 +1,6 @@
 import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
+import path from "path";
 
 export default function Ffmpeg(folder, bar) {
     this.folder = folder;
@@ -21,6 +22,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
     let start = 20/300;
     for (let item of this.folder) {
         let file = options.source + '/' + item;
+        console.log(path.normalize(file))
         let probe = await this.probe(file);
         probe = probe.streams.map(stream => {
             return {
