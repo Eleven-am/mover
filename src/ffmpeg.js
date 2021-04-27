@@ -27,8 +27,8 @@ Ffmpeg.prototype.probeFolder = async function (options) {
                 index: stream.index,
                 codec_type: stream.codec_type,
                 codec_name: stream.codec_name,
-                language: stream.tags.language,
-                title: stream.tags.title,
+                language: stream.tags ? stream.tags.language: 'eng',
+                title: stream.tags ? stream.tags.title: undefined,
                 codec_long_name: stream.codec_long_name,
             }
         });
