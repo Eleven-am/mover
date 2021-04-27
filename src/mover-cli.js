@@ -87,13 +87,12 @@ export async function cli(args){
         title: 'progress:',
         eta: true,
         percent: true,
-        items: 5
+        items: 4
     });
 
     bar.startItem('moving files');
     let data = await handler.move(answers);
     bar.update(20/300);
-
 
     if (data.info !== false) {
         bar.itemDone('moving files');
@@ -110,9 +109,7 @@ export async function cli(args){
         await exec.move();
         bar.update(300/300);
         bar.itemDone('moving files with rclone');
-        bar.startItem('done');
         setTimeout( function() {
-            bar.itemDone('done');
             terminal('\n');
             process.exit();
         } , 200 ) ;
