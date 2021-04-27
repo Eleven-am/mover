@@ -1,8 +1,12 @@
 import {spawn} from 'child_process';
 
-export default function Execute (commands, options) {
+export default function Execute (commands, options, bar) {
     this.commands = commands;
     this.options = options;
+    this.start = 90/300;
+    this.bar = bar;
+    bar.update(90/300)
+    this.speed = Math.round((108 / commands.length) * 10) / 10;
 }
 
 Execute.prototype.execCommands = async function () {
@@ -14,6 +18,8 @@ Execute.prototype.execCommands = async function () {
 
     if (this.commands.length)
         setTimeout(async () => {
+            this.start += this.speed/300;
+            this.bar.update(this.start);
             await this.execCommands();
         }, 2000)
 
@@ -23,6 +29,7 @@ Execute.prototype.execCommands = async function () {
 
 Execute.prototype.move = async () => {
     let command  = 'rclone move ' + this.options.source + ' media: ' + this.options.destination;
+    this.bar.update('moving');
     return execCommand(command)
 }
 

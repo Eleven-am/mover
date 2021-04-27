@@ -83,7 +83,6 @@ const fixArgs = async options => {
 export async function cli(args){
     let options = stringToArgs(args);
     let {answers, handler} = await fixArgs(options);
-
     const bar = terminal.progressBar({
         title: 'progress:',
         eta: true,
@@ -93,16 +92,20 @@ export async function cli(args){
 
     bar.startItem('moving files');
     let data = await handler.move(answers);
+    bar.update(20/300);
+
 
     if (data.info !== false) {
-        const ffmpeg = new Ffmpeg(data.files);
+        const ffmpeg = new Ffmpeg(data.files, bar);
         bar.startItem('probing files');
         let commands = await ffmpeg.probeFolder(answers);
-        let exec = new Execute(commands, answers);
         bar.startItem('converting files');
+        let exec = new Execute(commands, answers, bar);
         await exec.execCommands();
-        bar.startItem('moving files');
+        bar.update(200/300);
+        bar.startItem('moving files with rclone');
         await exec.move();
+        bar.update(300/300);
         bar.startItem('done');
         setTimeout( function() { terminal( '\n' ) ; process.exit() ; } , 200 ) ;
     }

@@ -1,8 +1,10 @@
 import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
 
-export default function Ffmpeg(folder) {
+export default function Ffmpeg(folder, bar) {
     this.folder = folder;
+    this.bar = bar;
+    this.speed = Math.round((61 / folder.length) * 10) / 10;
 }
 
 Ffmpeg.prototype.probe = async function (file) {
@@ -16,6 +18,7 @@ Ffmpeg.prototype.probe = async function (file) {
 
 Ffmpeg.prototype.probeFolder = async function (options) {
     let commands = [];
+    let start = 20/300;
     for (let item of this.folder) {
         let file = options.source + '/' + item;
         let probe = await this.probe(file);
@@ -45,6 +48,9 @@ Ffmpeg.prototype.probeFolder = async function (options) {
         let command = this.build(probe, item, length, options);
         if (command !== false)
             commands.push({command, item});
+
+        start += this.speed/300;
+        this.bar.update(start);
     }
 
     return commands;
