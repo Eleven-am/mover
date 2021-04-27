@@ -1,6 +1,5 @@
 import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
-import rename from 'locutus/php/strings/strtr';
 const dicDo = {" " : "\ ", "(" : "\(", ")" : "\)"};
 
 export default function Ffmpeg(folder, bar) {
@@ -60,8 +59,7 @@ Ffmpeg.prototype.probeFolder = async function (options) {
 }
 
 Ffmpeg.prototype.build = function (probe, file, length, options) {
-    let commandFile = rename(file, dicDo)
-    console.log(commandFile)
+    let commandFile = rename(file)
     let command = 'ffmpeg -loglevel error -hide_banner -i ' + options.source + '/' + commandFile + ' ';
     let h264 = probe.video.every(item => item.codec_name === 'h264');
     let trueHD = probe.audio.some(item => item.codec_name === 'truehd');
@@ -100,8 +98,16 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
         audio = probe.audio.length === length.audio ? ['-map 0:a? ', '-c:a libfdk_aac ']: ['-map 0:'+ probe.audio[0].index+ ' ', '-c:a:0 libfdk_aac '];
 
     let subtitle = subCheck ? ['', '']: ['-map 0:s? ', '-c:s mov_text '];
-    let output = file.replace(options.extension, 'mp4');
-    output = options.source + '/ffmpeg/' + rename(output, dicDo);
+    let output = commandFile.replace(options.extension, 'mp4');
+    output = options.source + '/ffmpeg/' + output;
     command += audio[0] + subtitle[0] + video[0] + video[1] + audio[1] + subtitle[1] + output;
     return command;
+}
+
+const rename = string => {
+    for (let item in dicDo)
+        string = string.replace(new RegExp(item, 'g'), dicDo[item])
+
+    console.log(string)
+    return string;
 }
