@@ -21,10 +21,7 @@ Execute.prototype.execCommands = async function () {
             this.start += this.speed/300;
             this.bar.update(this.start);
             await this.execCommands();
-        }, 2000)
-
-    else
-        return executed;
+        })
 }
 
 Execute.prototype.move = async function () {

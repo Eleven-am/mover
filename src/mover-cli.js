@@ -92,27 +92,27 @@ export async function cli(args){
 
     bar.update(0);
     bar.startItem('moving files');
-    let data = await handler.move(answers);
+    let data = await handler.move(answers)
 
     if (data.info !== false) {
-        bar.update(20/300);
-        bar.itemDone('moving files');
-        const ffmpeg = new Ffmpeg(data.files, bar);
-        bar.startItem('probing files');
+        await bar.update(20/300);
+        await bar.itemDone('moving files');
+        const ffmpeg = await new Ffmpeg(data.files, bar);
+        await bar.startItem('probing files');
         let commands = await ffmpeg.probeFolder(answers);
-        bar.itemDone('probing files');
-        bar.startItem('converting files');
-        let exec = new Execute(commands, answers, bar);
+        await bar.itemDone('probing files');
+        await bar.startItem('converting files');
+        let exec = await new Execute(commands, answers, bar);
         await exec.execCommands();
-        bar.itemDone('converting files');
-        bar.update(200/300);
-        bar.startItem('moving files with rclone');
+        await bar.itemDone('converting files');
+        await bar.update(200/300);
+        await bar.startItem('moving files with rclone');
         await exec.move();
-        bar.update(300/300);
-        bar.itemDone('moving files with rclone');
-        setTimeout( function() {
+        await bar.update(300/300);
+        await bar.itemDone('moving files with rclone');
+        setTimeout( async function() {
             terminal('\n');
-            process.exit();
+            await process.exit();
         } , 200 ) ;
     }
 }
