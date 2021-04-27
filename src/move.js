@@ -56,25 +56,14 @@ Handler.prototype.confirm = async function(){
     } return false;
 }
 
-Handler.prototype.rename = async function (bar, options) {
+Handler.prototype.move = async function(options, bar) {
     await this.createDir(bar);
-    let files = await readdir(this.item);
+    options.move ? await move(options, this.item, bar): true;
+    let files = await readdir(this.item)
     files = files.filter(item => item.charAt(0) !== '.');
     files = files.filter(item => item.endsWith(options.extension));
-
-    for (let item of files)
-        await renameFile(this.item +'/' + item, this.item + '/' +item.replace(/\s+/g, '.').replace(/\[.*?]|-/g, ''));
-
-    files = await readdir(this.item);
-    files = files.filter(item => item.charAt(0) !== '.');
-    return files.filter(item => item.endsWith(options.extension));
-}
-
-Handler.prototype.move = async function(options, bar) {
-    options.move ? await move(options, this.item, bar): true;
     let string = 'move option is ' + (options.move ? '': 'de') + 'activated';
     bar.show(string);
-    let files = await this.rename(bar, options);
     return {info: true, files};
 }
 
@@ -126,7 +115,7 @@ const move = async function (options, item, bar, hold) {
 
             if (matches && realFiles.length === 1) {
                 bar.show('moving ' + realFile);
-                await renameFile(item + realFile, hold + realFile);
+                await renameFile(item + realFile, hold + realFile.replace(/\s+/g, '.').replace(/\[.*?]|-/g, ''));
                 return true;
 
             } else {
@@ -138,7 +127,7 @@ const move = async function (options, item, bar, hold) {
                     } else {
                         let base = path.basename(item);
                         bar.show('moving ' + realFile);
-                        await renameFile(item + realFile, hold + base + '.' + ext);
+                        await renameFile(item + realFile, hold + base.replace(/\s+/g, '.').replace(/\[.*?]|-/g, '') + '.' + ext);
                         return true;
                     }
                 }

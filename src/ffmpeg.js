@@ -107,7 +107,5 @@ const rename = string => {
     string = string.replace(/ /g, '\\ ');
     string = string.replace(/\[/g, '\\[');
     string = string.replace(/]/g, '\\]');
-    /*string = string.replace(/\(/g, '\\(');
-    string = string.replace(/\)/g, '\\)');*/
     return string;
 }
