@@ -59,7 +59,7 @@ Handler.prototype.confirm = async function(){
 }
 
 Handler.prototype.move = async function(options, bar) {
-    await move(options, this.item, bar);
+    options.move ? await move(options, this.item, bar): true;
     let files = await readdir(this.item);
     files = files.filter(item => item.charAt(0) !== '.');
     files = files.filter(item => item.endsWith(options.extension));
