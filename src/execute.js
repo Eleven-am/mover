@@ -10,7 +10,7 @@ export default function Execute (commands, options, bar) {
 }
 
 Execute.prototype.execCommands = async function () {
-    for (let command of this.commands) {
+    for await (let command of this.commands) {
         let executed = await execCommand(command.command);
         if (executed)
             await execCommand('rm ' + this.options.source + '/' + command.item);
@@ -18,8 +18,6 @@ Execute.prototype.execCommands = async function () {
         this.start += this.speed/300;
         this.bar.update(this.start);
     }
-
-
 }
 
 Execute.prototype.move = async function () {

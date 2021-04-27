@@ -107,7 +107,6 @@ export async function cli(args){
         await bar.itemDone('converting files');
         await bar.update(200/300);
         await bar.startItem('moving files with rclone');
-        console.log('out')
         await exec.move();
         await bar.update(300/300);
         await bar.itemDone('moving files with rclone');
