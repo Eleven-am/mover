@@ -91,12 +91,12 @@ const move = async function (options, item, bar, hold) {
         let realFiles = [];
 
         for (let file of files) {
-            file = item + '/' + file
+            let temp = item + '/' + file
             const stat = await stats(file);
             if (!stat.isFile())
-                await move(options, file, bar, hold);
+                await move(options, temp, bar, hold);
             else
-                realFiles.push(file.replace(item, ''));
+                realFiles.push('/' + file);
         }
 
         realFiles = realFiles.filter(item => item.endsWith(options.extension))
