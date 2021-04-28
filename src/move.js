@@ -92,7 +92,7 @@ const move = async function (options, item, bar, hold) {
 
         for (let file of files) {
             let temp = item + '/' + file
-            const stat = await stats(file);
+            const stat = await stats(temp);
             if (!stat.isFile())
                 await move(options, temp, bar, hold);
             else
