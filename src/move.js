@@ -23,12 +23,12 @@ const readdir = promisify(fs.readdir);
 const renameFile = promisify(fs.rename);
 const stats = promisify(fs.lstat);
 
-export default function Handler (item) {
+export default function Handler(item) {
     if (item)
         this.item = item;
 }
 
-Handler.prototype.exists = async function(item) {
+Handler.prototype.exists = async function (item) {
     item = item || this.item;
     return new Promise((resolve) => {
         fs.access(item, (err) => {
@@ -41,8 +41,8 @@ Handler.prototype.exists = async function(item) {
     });
 }
 
-Handler.prototype.confirm = async function(){
-    if (this.item){
+Handler.prototype.confirm = async function () {
+    if (this.item) {
         this.item = this.item.charAt(0) !== '/' ? path.join(process.cwd(), this.item) : this.item;
         let response = await this.exists(this.item);
         if (response) {
@@ -52,17 +52,19 @@ Handler.prototype.confirm = async function(){
             else
                 response = this.item.replace(/\/$/, '');
 
-        } return response;
-    } return false;
+        }
+        return response;
+    }
+    return false;
 }
 
-Handler.prototype.move = async function(options, bar) {
+Handler.prototype.move = async function (options, bar) {
     await this.createDir(bar);
-    options.move ? await move(options, this.item, bar): true;
+    options.move ? await move(options, this.item, bar) : true;
     let files = await readdir(this.item)
     files = files.filter(item => item.charAt(0) !== '.');
     files = files.filter(item => item.endsWith(options.extension));
-    let string = 'move option is ' + (options.move ? '': 'de') + 'activated';
+    let string = 'move option is ' + (options.move ? '' : 'de') + 'activated';
     bar.show(string);
     return {info: true, files};
 }
@@ -83,12 +85,12 @@ Handler.prototype.createDir = async function (bar) {
 
 const move = async function (options, item, bar, hold) {
     hold = hold || item;
-    if (item !== false && item !== 'file'){
+    if (item !== false && item !== 'file') {
         let files = await readdir(item);
         files = files.filter(item => item.charAt(0) !== '.');
         let realFiles = [];
 
-        for (let file of files){
+        for (let file of files) {
             file = item + '/' + file
             const stat = await stats(file);
             if (!stat.isFile())
@@ -115,11 +117,11 @@ const move = async function (options, item, bar, hold) {
 
             if (matches && realFiles.length === 1) {
                 bar.show('moving ' + realFile);
-                await renameFile(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, ''));
+                await renameFile(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*|/g, '').replace(/\s*/, '.'));
                 return true;
 
             } else {
-                if (item !== hold){
+                if (item !== hold) {
                     if (realFiles.length > 1) {
                         bar.show(realFile + ' already in source directory');
                         return false;
@@ -127,7 +129,7 @@ const move = async function (options, item, bar, hold) {
                     } else {
                         let base = path.basename(item);
                         bar.show('moving ' + realFile);
-                        await renameFile(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '') + '.' + ext);
+                        await renameFile(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s*/, '.') + '.' + ext);
                         return true;
                     }
                 }
