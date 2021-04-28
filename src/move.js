@@ -60,7 +60,7 @@ Handler.prototype.confirm = async function () {
 
 Handler.prototype.move = async function (options, bar) {
     await this.createDir(bar);
-    options.move ? await move(options, this.item, bar) : true;
+    options.move ? await move(options, this.item, bar) : await renameFiles(this.item, options);
     let files = await readdir(this.item)
     files = files.filter(item => item.charAt(0) !== '.');
     files = files.filter(item => item.endsWith(options.extension));
@@ -81,6 +81,20 @@ Handler.prototype.createDir = async function (bar) {
             })
         resolve(true);
     })
+}
+
+const renameFiles = async (item, options) => {
+    let files = await readdir(item);
+    files = files.filter(item => item.charAt(0) !== '.');
+    files = files.filter(item => item.endsWith(options.extension))
+
+    for (let file of files){
+        let temp = item + '/' + file;
+        file = item + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+        await renameFile(temp, file);
+    }
+
+    return true;
 }
 
 const move = async function (options, item, bar, hold) {
@@ -117,21 +131,18 @@ const move = async function (options, item, bar, hold) {
 
             if (matches && realFiles.length === 1) {
                 bar.show('moving ' + realFile);
-                   console.log(11, item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.'))
-                //await renameFile(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*|/g, '').replace(/\s*/, '.'));
+                await renameFile(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.'));
                 return true;
 
             } else {
                 if (item !== hold) {
                     if (realFiles.length > 1) {
-                        bar.show(realFile + ' already in source directory');
                         return false;
 
                     } else {
                         let base = path.basename(item);
                         bar.show('moving ' + realFile);
-                        console.log(item + realFile, hold , base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s*/, '.') + '.' + ext)
-                        //await renameFile(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s*/, '.') + '.' + ext);
+                        await renameFile(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.') + '.' + ext);
                         return true;
                     }
                 }
