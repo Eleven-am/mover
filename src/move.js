@@ -117,7 +117,7 @@ const move = async function (options, item, bar, hold) {
 
             if (matches && realFiles.length === 1) {
                 bar.show('moving ' + realFile);
-                console.log(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*|/g, '').replace(/\s*/, '.'))
+                console.log(item + realFile, hold , realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*|/g, '').replace(/\s*/, '.'))
                 //await renameFile(item + realFile, hold + realFile.replace(/\[.*?]\s*|-|\(.*?\)\s*|/g, '').replace(/\s*/, '.'));
                 return true;
 
@@ -130,7 +130,7 @@ const move = async function (options, item, bar, hold) {
                     } else {
                         let base = path.basename(item);
                         bar.show('moving ' + realFile);
-                        console.log(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s*/, '.') + '.' + ext)
+                        console.log(item + realFile, hold , base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s*/, '.') + '.' + ext)
                         //await renameFile(item + realFile, hold + base.replace(/\[.*?]\s*|-|\(.*?\)\s*/g, '').replace(/\s*/, '.') + '.' + ext);
                         return true;
                     }
