@@ -7,7 +7,7 @@
     "mover": "bin/mover"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup": "npm install && npm link"
   },
   "keywords": [],
   "author": "",
