@@ -66,7 +66,7 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
         return false;
     }
 
-    let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3');
+    let aacAc3 = probe.audio.every(item => item.codec_name === 'aac' || item.codec_name === 'ac3' || item.codec_name === 'eac3');
     let subCheck = probe.subtitles.some(item => item.codec_name = 'hdmv_pgs_subtitle');
     let audioMap = probe.audio.length > 1;
 
@@ -74,8 +74,8 @@ Ffmpeg.prototype.build = function (probe, file, length, options) {
     let video = ['-map 0:v ', '-c:v ' + (h264 ? 'copy' : 'libx264') + ' '];
 
     if (audioMap) {
-        let indexes = probe.audio.filter(item => item.codec_name === 'aac' || item.codec_name === 'ac3').map(item => item.index);
-        let outIndexes = probe.audio.filter(item => item.codec_name !== 'aac' && item.codec_name !== 'ac3').map(item => item.index);
+        let indexes = probe.audio.filter(item => item.codec_name === 'aac' || item.codec_name === 'ac3' || item.codec_name === 'eac3').map(item => item.index);
+        let outIndexes = probe.audio.filter(item => item.codec_name !== 'aac' && item.codec_name !== 'ac3' && item.codec_name !== 'eac3').map(item => item.index);
 
         let map = indexes.map(item => '-map 0:' + item).join(' ') + ' ';
         map += outIndexes.map(item => '-map 0:' + item).join(' ') + ' ';
