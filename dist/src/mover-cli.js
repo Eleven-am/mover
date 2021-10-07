@@ -86,7 +86,7 @@ var stringToArgs = function (rawArgs) {
 };
 function fixArgs(options) {
     return __awaiter(this, void 0, void 0, function () {
-        var questions, move, verbose, source, destination, extension, answers, bar, handler, _a, _b, _c;
+        var questions, move, verbose, source, destination, extension, answers, bar, handler, _a, _b, e_1, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -94,10 +94,13 @@ function fixArgs(options) {
                     move = options.move, verbose = options.verbose, source = options.directory, destination = options.folder, extension = options.extension;
                     answers = { move: move, source: source, verbose: verbose, destination: destination, extension: extension };
                     bar = new logger_1.default(answers);
-                    handler = new handler_1.default(answers, bar);
                     _d.label = 1;
                 case 1:
-                    if (!(options.directory === false || options.directory === 'file')) return [3 /*break*/, 4];
+                    _d.trys.push([1, 6, , 7]);
+                    handler = new handler_1.default(answers, bar);
+                    _d.label = 2;
+                case 2:
+                    if (!(options.directory === false || options.directory === 'file')) return [3 /*break*/, 5];
                     questions.push({
                         type: 'input',
                         name: 'source',
@@ -106,16 +109,20 @@ function fixArgs(options) {
                     });
                     _a = [__assign({}, answers)];
                     return [4 /*yield*/, inquirer_1.default.prompt(questions)];
-                case 2:
+                case 3:
                     answers = __assign.apply(void 0, _a.concat([_d.sent()]));
                     handler = new handler_1.default(answers, bar);
                     _b = options;
                     return [4 /*yield*/, handler.confirm()];
-                case 3:
+                case 4:
                     _b.directory = _d.sent();
                     questions = [];
-                    return [3 /*break*/, 1];
-                case 4:
+                    return [3 /*break*/, 2];
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    e_1 = _d.sent();
+                    return [3 /*break*/, 7];
+                case 7:
                     if (!options.folder)
                         questions.push({
                             type: 'input',
@@ -123,7 +130,7 @@ function fixArgs(options) {
                             message: 'please enter a destination folder',
                             default: 'nzbDownload'
                         });
-                    if (!!options.extension) return [3 /*break*/, 5];
+                    if (!!options.extension) return [3 /*break*/, 8];
                     questions.push({
                         type: 'list',
                         name: 'extension',
@@ -131,14 +138,14 @@ function fixArgs(options) {
                         choices: ['mkv', 'mp4', 'avi', 'mov'],
                         default: 'mkv'
                     });
-                    return [3 /*break*/, 7];
-                case 5:
+                    return [3 /*break*/, 10];
+                case 8:
                     _c = [__assign({}, answers)];
                     return [4 /*yield*/, inquirer_1.default.prompt(questions)];
-                case 6:
+                case 9:
                     answers = __assign.apply(void 0, _c.concat([_d.sent()]));
-                    _d.label = 7;
-                case 7:
+                    _d.label = 10;
+                case 10:
                     if (typeof answers.source === 'string' && answers.source.charAt(0) !== '/')
                         answers.source = path_1.default.join(process.cwd(), answers.source);
                     return [2 /*return*/, { answers: answers, bar: new logger_1.default(answers) }];

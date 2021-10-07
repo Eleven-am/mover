@@ -48,20 +48,22 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
     let {move, verbose, directory: source, folder: destination, extension} = options;
     let answers = {move, source, verbose, destination, extension};
     let bar = new Logger(answers);
-    let handler = new Handler(answers, bar);
-    while (options.directory === false || options.directory === 'file') {
-        questions.push({
-            type: 'input',
-            name: 'source',
-            message: 'please enter a source folder',
-            default: '/home/maix/Downloads'
-        });
+    try{
+        let handler = new Handler(answers, bar);
+        while (options.directory === false || options.directory === 'file') {
+            questions.push({
+                type: 'input',
+                name: 'source',
+                message: 'please enter a source folder',
+                default: '/home/maix/Downloads'
+            });
 
-        answers = {...answers, ...await inquirer.prompt(questions)};
-        handler = new Handler(answers, bar);
-        options.directory = await handler.confirm();
-        questions = [];
-    }
+            answers = {...answers, ...await inquirer.prompt(questions)};
+            handler = new Handler(answers, bar);
+            options.directory = await handler.confirm();
+            questions = [];
+        }
+    } catch (e) {}
 
     if (!options.folder)
         questions.push({
