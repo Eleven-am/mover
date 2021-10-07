@@ -89,13 +89,12 @@ var Handler = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.source) return [3 /*break*/, 3];
+                        if (!(this.source !== '')) return [3 /*break*/, 3];
                         this.source = this.source.charAt(0) !== '/' ? path_1.default.join(process.cwd(), this.source) : this.source;
                         return [4 /*yield*/, this.exists()];
                     case 1:
                         response = _a.sent();
                         if (!response) return [3 /*break*/, 3];
-                        response_1 = '';
                         return [4 /*yield*/, stats(this.source)];
                     case 2:
                         stat = _a.sent();

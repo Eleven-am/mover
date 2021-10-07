@@ -59,7 +59,7 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
             });
 
             answers = {...answers, ...await inquirer.prompt(questions)};
-            handler = new Handler(answers, bar);
+            handler.source = answers.source as string;
             options.directory = await handler.confirm();
             questions = [];
         }
@@ -74,6 +74,8 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
             message: 'please enter a destination folder',
             default: 'nzbDownload'
         });
+    else
+        answers.destination = options.folder;
 
     if (!options.extension)
         questions.push({

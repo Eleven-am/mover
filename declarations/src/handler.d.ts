@@ -1,7 +1,7 @@
 import { Options } from "./mover-cli";
 import Logger from "./logger";
 export default class Handler {
-    private source;
+    source: string;
     private readonly options;
     private readonly bar;
     constructor(options: Options, bar: Logger, setup?: boolean);

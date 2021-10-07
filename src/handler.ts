@@ -26,7 +26,7 @@ const renameFile = promisify(fs.rename);
 const stats = promisify(fs.lstat);
 
 export default class Handler {
-    private source: string;
+    public source: string;
     private readonly options: Options;
     private readonly bar: Logger;
 
@@ -43,11 +43,11 @@ export default class Handler {
     }
 
     async confirm(): Promise<boolean | string> {
-        if (this.source) {
+        if (this.source !== '') {
             this.source = this.source.charAt(0) !== '/' ? path.join(process.cwd(), this.source) : this.source;
             let response = await this.exists();
             if (response) {
-                let response = '';
+                let response;
                 const stat = await stats(this.source);
                 if (stat.isFile())
                     response = 'file';

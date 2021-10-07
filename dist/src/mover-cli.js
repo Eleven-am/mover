@@ -111,7 +111,7 @@ function fixArgs(options) {
                     return [4 /*yield*/, inquirer_1.default.prompt(questions)];
                 case 3:
                     answers = __assign.apply(void 0, _a.concat([_d.sent()]));
-                    handler = new handler_1.default(answers, bar);
+                    handler.source = answers.source;
                     _b = options;
                     return [4 /*yield*/, handler.confirm()];
                 case 4:
@@ -133,6 +133,8 @@ function fixArgs(options) {
                             message: 'please enter a destination folder',
                             default: 'nzbDownload'
                         });
+                    else
+                        answers.destination = options.folder;
                     if (!options.extension)
                         questions.push({
                             type: 'list',
