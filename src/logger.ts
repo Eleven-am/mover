@@ -1,4 +1,3 @@
-import {exit} from 'node:process';
 import {Options} from "./mover-cli";
 const terminal = require('terminal-kit').terminal;
 
@@ -47,7 +46,7 @@ export default class Logger {
 
     async done() {
         if (this.bar)
-            await exit();
+            process.exit(1);
 
         else
             this.show('process completed');

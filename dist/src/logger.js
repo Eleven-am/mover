@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var node_process_1 = require("node:process");
 var terminal = require('terminal-kit').terminal;
 var Logger = /** @class */ (function () {
     function Logger(answers) {
@@ -73,18 +72,11 @@ var Logger = /** @class */ (function () {
     Logger.prototype.done = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.bar) return [3 /*break*/, 2];
-                        return [4 /*yield*/, (0, node_process_1.exit)()];
-                    case 1:
-                        _a.sent();
-                        return [3 /*break*/, 3];
-                    case 2:
-                        this.show('process completed');
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
-                }
+                if (this.bar)
+                    process.exit(1);
+                else
+                    this.show('process completed');
+                return [2 /*return*/];
             });
         });
     };
