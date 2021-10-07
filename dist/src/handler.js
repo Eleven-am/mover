@@ -254,9 +254,9 @@ var Handler = /** @class */ (function () {
                         }
                         match = matches;
                         fileName = match ? "Season-S" + (match.groups.season || '??') + "-Episode-E" + match.groups.episode : realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
-                        file = this.source + '/' + fileName + ext;
+                        file = this.source + fileName + ext;
                         this.bar.show('moving ' + realFile);
-                        return [4 /*yield*/, renameFile(folder + '/' + realFile, file)];
+                        return [4 /*yield*/, renameFile(folder + realFile, file)];
                     case 14:
                         _c.sent();
                         _c.label = 15;
@@ -281,7 +281,7 @@ var Handler = /** @class */ (function () {
     };
     Handler.prototype.renameFiles = function (folder, destination) {
         return __awaiter(this, void 0, void 0, function () {
-            var files, files_2, files_2_1, file, temp, e_3_1;
+            var files, base, files_2, files_2_1, file, temp, e_3_1;
             var e_3, _a;
             var _this = this;
             return __generator(this, function (_b) {
@@ -292,6 +292,7 @@ var Handler = /** @class */ (function () {
                         return [4 /*yield*/, readdir(folder)];
                     case 1:
                         files = _b.sent();
+                        base = path_1.default.basename(folder);
                         files = files.filter(function (item) { return item.charAt(0) !== '.'; });
                         files = files.filter(function (item) { return item.endsWith(_this.options.extension); });
                         _b.label = 2;
@@ -303,7 +304,7 @@ var Handler = /** @class */ (function () {
                         if (!!files_2_1.done) return [3 /*break*/, 6];
                         file = files_2_1.value;
                         temp = folder + '/' + file;
-                        file = destination + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+                        file = destination + '/' + base + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
                         return [4 /*yield*/, renameFile(temp, file)];
                     case 4:
                         _b.sent();

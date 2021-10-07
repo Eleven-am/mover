@@ -133,9 +133,9 @@ export default class Handler {
 
             const match: {groups: {season?: string, episode?: string}} | null = matches;
             const fileName = match? `Season-S${match.groups.season || '??'}-Episode-E${match.groups.episode}`: realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
-            const file = this.source + '/' + fileName + ext;
+            const file = this.source + fileName + ext;
             this.bar.show('moving ' + realFile);
-            await renameFile(folder + '/' + realFile, file);
+            await renameFile(folder + realFile, file);
         }
     }
 
@@ -143,12 +143,13 @@ export default class Handler {
         folder = folder || this.source;
         destination = destination || this.source;
         let files = await readdir(folder);
+        const base = path.basename(folder);
         files = files.filter(item => item.charAt(0) !== '.');
         files = files.filter(item => item.endsWith(this.options.extension as string));
 
         for (let file of files){
             let temp = folder + '/' + file;
-            file = destination + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+            file = destination + '/' + base + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
             await renameFile(temp, file);
         }
     }
