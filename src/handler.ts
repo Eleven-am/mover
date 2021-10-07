@@ -30,11 +30,15 @@ export default class Handler {
     private readonly options: Options;
     private readonly bar: Logger;
 
-    constructor(options: Options, bar: Logger) {
+    constructor(options: Options, bar: Logger, setup?: boolean) {
         this.bar = bar;
         this.options = options;
         if (typeof options.source !== 'boolean')
             this.source = options.source;
+
+        else if(setup)
+            this.source = '';
+
         else throw new Error('No directory provided');
     }
 

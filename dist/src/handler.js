@@ -73,11 +73,13 @@ var readdir = (0, util_1.promisify)(fs_1.default.readdir);
 var renameFile = (0, util_1.promisify)(fs_1.default.rename);
 var stats = (0, util_1.promisify)(fs_1.default.lstat);
 var Handler = /** @class */ (function () {
-    function Handler(options, bar) {
+    function Handler(options, bar, setup) {
         this.bar = bar;
         this.options = options;
         if (typeof options.source !== 'boolean')
             this.source = options.source;
+        else if (setup)
+            this.source = '';
         else
             throw new Error('No directory provided');
     }

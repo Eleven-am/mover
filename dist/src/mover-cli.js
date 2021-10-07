@@ -96,8 +96,8 @@ function fixArgs(options) {
                     bar = new logger_1.default(answers);
                     _d.label = 1;
                 case 1:
-                    _d.trys.push([1, 6, , 7]);
-                    handler = new handler_1.default(answers, bar);
+                    _d.trys.push([1, 6, , 8]);
+                    handler = new handler_1.default(answers, bar, true);
                     _d.label = 2;
                 case 2:
                     if (!(options.directory === false || options.directory === 'file')) return [3 /*break*/, 5];
@@ -118,11 +118,14 @@ function fixArgs(options) {
                     _b.directory = _d.sent();
                     questions = [];
                     return [3 /*break*/, 2];
-                case 5: return [3 /*break*/, 7];
+                case 5: return [3 /*break*/, 8];
                 case 6:
                     e_1 = _d.sent();
-                    return [3 /*break*/, 7];
+                    return [4 /*yield*/, bar.done()];
                 case 7:
+                    _d.sent();
+                    return [3 /*break*/, 8];
+                case 8:
                     if (!options.folder)
                         questions.push({
                             type: 'input',
@@ -130,7 +133,7 @@ function fixArgs(options) {
                             message: 'please enter a destination folder',
                             default: 'nzbDownload'
                         });
-                    if (!!options.extension) return [3 /*break*/, 8];
+                    if (!!options.extension) return [3 /*break*/, 9];
                     questions.push({
                         type: 'list',
                         name: 'extension',
@@ -138,14 +141,14 @@ function fixArgs(options) {
                         choices: ['mkv', 'mp4', 'avi', 'mov'],
                         default: 'mkv'
                     });
-                    return [3 /*break*/, 10];
-                case 8:
+                    return [3 /*break*/, 11];
+                case 9:
                     _c = [__assign({}, answers)];
                     return [4 /*yield*/, inquirer_1.default.prompt(questions)];
-                case 9:
-                    answers = __assign.apply(void 0, _c.concat([_d.sent()]));
-                    _d.label = 10;
                 case 10:
+                    answers = __assign.apply(void 0, _c.concat([_d.sent()]));
+                    _d.label = 11;
+                case 11:
                     if (typeof answers.source === 'string' && answers.source.charAt(0) !== '/')
                         answers.source = path_1.default.join(process.cwd(), answers.source);
                     return [2 /*return*/, { answers: answers, bar: new logger_1.default(answers) }];

@@ -49,7 +49,7 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
     let answers = {move, source, verbose, destination, extension};
     let bar = new Logger(answers);
     try{
-        let handler = new Handler(answers, bar);
+        let handler = new Handler(answers, bar, true);
         while (options.directory === false || options.directory === 'file') {
             questions.push({
                 type: 'input',
@@ -63,7 +63,9 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
             options.directory = await handler.confirm();
             questions = [];
         }
-    } catch (e) {}
+    } catch (e) {
+        await bar.done();
+    }
 
     if (!options.folder)
         questions.push({

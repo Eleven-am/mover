@@ -4,7 +4,7 @@ export default class Handler {
     private source;
     private readonly options;
     private readonly bar;
-    constructor(options: Options, bar: Logger);
+    constructor(options: Options, bar: Logger, setup?: boolean);
     confirm(): Promise<boolean | string>;
     exists(source?: string): Promise<boolean>;
     createDir(): Promise<boolean>;
