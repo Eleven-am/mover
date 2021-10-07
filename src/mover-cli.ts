@@ -84,8 +84,9 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
             default: 'mkv'
         });
     else
+        answers.extension = options.extension;
 
-        answers = {...answers, ...await inquirer.prompt(questions)};
+    answers = {...answers, ...await inquirer.prompt(questions)};
     if (typeof answers.source === 'string' && answers.source.charAt(0) !== '/')
         answers.source = path.join(process.cwd(), answers.source)
 

@@ -133,22 +133,20 @@ function fixArgs(options) {
                             message: 'please enter a destination folder',
                             default: 'nzbDownload'
                         });
-                    if (!!options.extension) return [3 /*break*/, 9];
-                    questions.push({
-                        type: 'list',
-                        name: 'extension',
-                        message: 'please enter a filtered file extension',
-                        choices: ['mkv', 'mp4', 'avi', 'mov'],
-                        default: 'mkv'
-                    });
-                    return [3 /*break*/, 11];
-                case 9:
+                    if (!options.extension)
+                        questions.push({
+                            type: 'list',
+                            name: 'extension',
+                            message: 'please enter a filtered file extension',
+                            choices: ['mkv', 'mp4', 'avi', 'mov'],
+                            default: 'mkv'
+                        });
+                    else
+                        answers.extension = options.extension;
                     _c = [__assign({}, answers)];
                     return [4 /*yield*/, inquirer_1.default.prompt(questions)];
-                case 10:
+                case 9:
                     answers = __assign.apply(void 0, _c.concat([_d.sent()]));
-                    _d.label = 11;
-                case 11:
                     if (typeof answers.source === 'string' && answers.source.charAt(0) !== '/')
                         answers.source = path_1.default.join(process.cwd(), answers.source);
                     return [2 /*return*/, { answers: answers, bar: new logger_1.default(answers) }];
