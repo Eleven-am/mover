@@ -1,8 +1,9 @@
 import { Options } from "./mover-cli";
 export default class Logger {
     private readonly verbose;
-    private readonly bar;
+    private bar;
     constructor(answers: Options);
+    activate(): void;
     show(info: any): void;
     update(number: number): void;
     startItem(number: string): void;

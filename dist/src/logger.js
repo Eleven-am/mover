@@ -40,13 +40,16 @@ var terminal = require('terminal-kit').terminal;
 var Logger = /** @class */ (function () {
     function Logger(answers) {
         this.verbose = answers.verbose;
-        this.bar = !answers.verbose ? terminal.progressBar({
+        this.bar = null;
+    }
+    Logger.prototype.activate = function () {
+        this.bar = !this.verbose ? terminal.progressBar({
             title: 'progress:',
             eta: true,
             percent: true,
             items: 4
         }) : null;
-    }
+    };
     Logger.prototype.show = function (info) {
         if (this.verbose)
             console.log(info);

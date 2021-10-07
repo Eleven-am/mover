@@ -94,7 +94,8 @@ export async function cli(args: string[]) {
     let options = stringToArgs(args);
     let {answers, bar} = await fixArgs(options);
 
-    bar.show(answers)
+    bar.activate();
+    bar.show(answers);
 
     bar.update(0);
     bar.startItem('moving files');

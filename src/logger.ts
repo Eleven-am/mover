@@ -3,11 +3,15 @@ const terminal = require('terminal-kit').terminal;
 
 export default class Logger {
     private readonly verbose: boolean;
-    private readonly bar: any;
+    private bar: any;
 
     constructor(answers: Options) {
         this.verbose = answers.verbose
-        this.bar = !answers.verbose ? terminal.progressBar({
+        this.bar = null;
+    }
+
+    activate() {
+        this.bar = !this.verbose ? terminal.progressBar({
             title: 'progress:',
             eta: true,
             percent: true,

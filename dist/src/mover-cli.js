@@ -163,6 +163,7 @@ function cli(args) {
                     return [4 /*yield*/, fixArgs(options)];
                 case 1:
                     _a = _b.sent(), answers = _a.answers, bar = _a.bar;
+                    bar.activate();
                     bar.show(answers);
                     bar.update(0);
                     bar.startItem('moving files');
