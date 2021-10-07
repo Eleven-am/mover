@@ -1,5 +1,6 @@
 import ffprobe from 'ffprobe';
 import { Options } from "./mover-cli";
+import Logger from "./logger";
 interface Codecs {
     index: number;
     codec_type: "video" | "audio" | "images" | "subtitle" | undefined;
@@ -11,7 +12,9 @@ interface Codecs {
 export default class Ffmpeg {
     private readonly files;
     private readonly options;
-    constructor(options: Options, files: string[]);
+    private readonly bar;
+    private readonly speed;
+    constructor(options: Options, files: string[], bar: Logger);
     probe(file: string): Promise<ffprobe.FFProbeResult | null>;
     probeFolder(): Promise<{
         item: string;

@@ -1,25 +1,34 @@
 import {spawn} from 'child_process';
 import {Options} from "./mover-cli";
+import Logger from "./logger";
 
 export default class Execute {
+    private start: number;
+    private readonly bar: Logger;
     private readonly options: Options;
     private readonly commands: {item: string, command: string}[];
+    private readonly speed: number;
 
-    constructor(options: Options, commands: {item: string, command: string}[]) {
+    constructor(options: Options, commands: {item: string, command: string}[], bar: Logger) {
+        this.bar = bar;
         this.options = options;
         this.commands = commands;
+        this.start = 90 / 300;
+        this.bar = bar;
+        this.bar.update(90 / 300);
+        this.speed = Math.round((108 / commands.length) * 10) / 10;
     }
 
     async execCommand (command: string) {
         let params = command.split(' ');
         let host = params[0];
         params.shift();
-        //bar.show(command);
-        return new Promise(resolve => {
+        this.bar.show(command);
+        return new Promise<boolean>(resolve => {
             const exec = spawn(host, params);
 
             exec.stderr.on('data', (data) => {
-                //bar.show(`${data}`);
+                this.bar.show(`${data}`);
                 resolve(false);
             });
 
@@ -34,6 +43,8 @@ export default class Execute {
         let execute = await this.execCommand(command);
         if (execute)
             return await this.execCommand('rm -r ' + this.options.source + '/ffmpeg');
+
+        return false;
     }
 
     async execCommands() {
@@ -46,6 +57,9 @@ export default class Execute {
                 if (executed)
                     await this.execCommand('rm ' + this.options.source + '/' + command.item);
             }
+
+            this.start += this.speed / 300;
+            this.bar.update(this.start);
         }
     }
 }

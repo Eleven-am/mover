@@ -1,6 +1,7 @@
 import ffprobe, {FFProbeResult} from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
 import {Options} from "./mover-cli";
+import Logger from "./logger";
 
 interface Codecs {
     index: number,
@@ -14,10 +15,14 @@ interface Codecs {
 export default class Ffmpeg {
     private readonly files: string[];
     private readonly options: Options;
+    private readonly bar: Logger;
+    private readonly speed: number;
 
-    constructor(options: Options, files: string[]) {
+    constructor(options: Options, files: string[], bar: Logger) {
+        this.speed = Math.round((61 / files.length) * 10) / 10;
         this.options = options;
         this.files = files;
+        this.bar = bar;
     }
 
     async probe(file: string) {
@@ -31,6 +36,7 @@ export default class Ffmpeg {
 
     async probeFolder() {
         let commands: { item: string, command: string }[] = [];
+        let start = 20/300;
         for (let item of this.files) {
             let file = this.options.source + '/' + item;
             let res = await this.probe(file);
@@ -60,6 +66,10 @@ export default class Ffmpeg {
             let command = this.build(item, codecs, length);
             if (command !== false)
                 commands.push({command, item});
+
+            this.bar.show(probe);
+            start += this.speed/300;
+            this.bar.update(start);
         }
 
         return commands;
@@ -70,7 +80,7 @@ export default class Ffmpeg {
         let h264 = probe.video.every(item => item.codec_name === 'h264');
 
         if (!h264) {
-            //this.bar.show('skipping '+ file)
+            this.bar.show('skipping '+ file)
             return false;
         }
 

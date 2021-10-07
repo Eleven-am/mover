@@ -73,7 +73,8 @@ var readdir = (0, util_1.promisify)(fs_1.default.readdir);
 var renameFile = (0, util_1.promisify)(fs_1.default.rename);
 var stats = (0, util_1.promisify)(fs_1.default.lstat);
 var Handler = /** @class */ (function () {
-    function Handler(options) {
+    function Handler(options, bar) {
+        this.bar = bar;
         this.options = options;
         if (typeof options.source !== 'boolean')
             this.source = options.source;
@@ -127,6 +128,7 @@ var Handler = /** @class */ (function () {
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
                         var exists;
+                        var _this = this;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0: return [4 /*yield*/, this.exists(this.source + '/ffmpeg')];
@@ -135,6 +137,7 @@ var Handler = /** @class */ (function () {
                                     if (!exists)
                                         fs_1.default.mkdir(this.source + '/ffmpeg', function (err) {
                                             if (err) {
+                                                _this.bar.show(err);
                                                 resolve(false);
                                             }
                                         });
@@ -148,7 +151,7 @@ var Handler = /** @class */ (function () {
     };
     Handler.prototype.moveOut = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, files;
+            var _a, files, string;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -171,6 +174,8 @@ var Handler = /** @class */ (function () {
                         files = _b.sent();
                         files = files.filter(function (item) { return item.charAt(0) !== '.'; });
                         files = files.filter(function (item) { return item.endsWith(_this.options.extension); });
+                        string = 'move option is ' + (this.options.move ? '' : 'de') + 'activated';
+                        this.bar.show(string);
                         return [2 /*return*/, { info: true, files: files }];
                 }
             });
@@ -249,6 +254,7 @@ var Handler = /** @class */ (function () {
                         match = matches;
                         fileName = match ? "Season-S" + (match.groups.season || '??') + "-Episode-E" + match.groups.episode : realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
                         file = this.source + '/' + fileName + ext;
+                        this.bar.show('moving ' + realFile);
                         return [4 /*yield*/, renameFile(folder + '/' + realFile, file)];
                     case 14:
                         _c.sent();

@@ -53,9 +53,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ffprobe_1 = __importDefault(require("ffprobe"));
 var ffprobe_static_1 = __importDefault(require("ffprobe-static"));
 var Ffmpeg = /** @class */ (function () {
-    function Ffmpeg(options, files) {
+    function Ffmpeg(options, files, bar) {
+        this.speed = Math.round((61 / files.length) * 10) / 10;
         this.options = options;
         this.files = files;
+        this.bar = bar;
     }
     Ffmpeg.prototype.probe = function (file) {
         return __awaiter(this, void 0, void 0, function () {
@@ -71,12 +73,13 @@ var Ffmpeg = /** @class */ (function () {
     };
     Ffmpeg.prototype.probeFolder = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var commands, _a, _b, item, file, res, probe, video, audio, subtitles, length_1, temp, codecs, command, e_1_1;
+            var commands, start, _a, _b, item, file, res, probe, video, audio, subtitles, length_1, temp, codecs, command, e_1_1;
             var e_1, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
                         commands = [];
+                        start = 20 / 300;
                         _d.label = 1;
                     case 1:
                         _d.trys.push([1, 6, 7, 8]);
@@ -111,6 +114,9 @@ var Ffmpeg = /** @class */ (function () {
                         command = this.build(item, codecs, length_1);
                         if (command !== false)
                             commands.push({ command: command, item: item });
+                        this.bar.show(probe);
+                        start += this.speed / 300;
+                        this.bar.update(start);
                         _d.label = 4;
                     case 4:
                         _b = _a.next();
@@ -135,7 +141,7 @@ var Ffmpeg = /** @class */ (function () {
         var command = 'ffmpeg -loglevel error -hide_banner -i ' + this.options.source + '/' + file + ' ';
         var h264 = probe.video.every(function (item) { return item.codec_name === 'h264'; });
         if (!h264) {
-            //this.bar.show('skipping '+ file)
+            this.bar.show('skipping ' + file);
             return false;
         }
         var aacAc3 = probe.audio.every(function (item) { return item.codec_name === 'aac' || item.codec_name === 'ac3' || item.codec_name === 'eac3'; });

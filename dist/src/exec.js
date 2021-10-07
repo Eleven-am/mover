@@ -45,22 +45,28 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
 var Execute = /** @class */ (function () {
-    function Execute(options, commands) {
+    function Execute(options, commands, bar) {
+        this.bar = bar;
         this.options = options;
         this.commands = commands;
+        this.start = 90 / 300;
+        this.bar = bar;
+        this.bar.update(90 / 300);
+        this.speed = Math.round((108 / commands.length) * 10) / 10;
     }
     Execute.prototype.execCommand = function (command) {
         return __awaiter(this, void 0, void 0, function () {
             var params, host;
+            var _this = this;
             return __generator(this, function (_a) {
                 params = command.split(' ');
                 host = params[0];
                 params.shift();
-                //bar.show(command);
+                this.bar.show(command);
                 return [2 /*return*/, new Promise(function (resolve) {
                         var exec = (0, child_process_1.spawn)(host, params);
                         exec.stderr.on('data', function (data) {
-                            //bar.show(`${data}`);
+                            _this.bar.show("" + data);
                             resolve(false);
                         });
                         exec.on('close', function () {
@@ -83,7 +89,7 @@ var Execute = /** @class */ (function () {
                         if (!execute) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.execCommand('rm -r ' + this.options.source + '/ffmpeg')];
                     case 2: return [2 /*return*/, _a.sent()];
-                    case 3: return [2 /*return*/];
+                    case 3: return [2 /*return*/, false];
                 }
             });
         });
@@ -95,12 +101,12 @@ var Execute = /** @class */ (function () {
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        _d.trys.push([0, 9, 10, 15]);
+                        _d.trys.push([0, 10, 11, 16]);
                         _b = __asyncValues(this.commands);
                         _d.label = 1;
                     case 1: return [4 /*yield*/, _b.next()];
                     case 2:
-                        if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 8];
+                        if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 9];
                         command = _c.value;
                         if (!(this.options.extension === 'mp4' && command.item.endsWith('mp4'))) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.execCommand('mv ' + this.options.source + '/' + command.item + ' ' + this.options.source + '/ffmpeg')];
@@ -115,25 +121,29 @@ var Execute = /** @class */ (function () {
                     case 6:
                         _d.sent();
                         _d.label = 7;
-                    case 7: return [3 /*break*/, 1];
-                    case 8: return [3 /*break*/, 15];
-                    case 9:
+                    case 7:
+                        this.start += this.speed / 300;
+                        this.bar.update(this.start);
+                        _d.label = 8;
+                    case 8: return [3 /*break*/, 1];
+                    case 9: return [3 /*break*/, 16];
+                    case 10:
                         e_1_1 = _d.sent();
                         e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 15];
-                    case 10:
-                        _d.trys.push([10, , 13, 14]);
-                        if (!(_c && !_c.done && (_a = _b.return))) return [3 /*break*/, 12];
-                        return [4 /*yield*/, _a.call(_b)];
+                        return [3 /*break*/, 16];
                     case 11:
+                        _d.trys.push([11, , 14, 15]);
+                        if (!(_c && !_c.done && (_a = _b.return))) return [3 /*break*/, 13];
+                        return [4 /*yield*/, _a.call(_b)];
+                    case 12:
                         _d.sent();
-                        _d.label = 12;
-                    case 12: return [3 /*break*/, 14];
-                    case 13:
+                        _d.label = 13;
+                    case 13: return [3 /*break*/, 15];
+                    case 14:
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
-                    case 14: return [7 /*endfinally*/];
-                    case 15: return [2 /*return*/];
+                    case 15: return [7 /*endfinally*/];
+                    case 16: return [2 /*return*/];
                 }
             });
         });

@@ -1,8 +1,10 @@
 import { Options } from "./mover-cli";
+import Logger from "./logger";
 export default class Handler {
     private source;
     private readonly options;
-    constructor(options: Options);
+    private readonly bar;
+    constructor(options: Options, bar: Logger);
     confirm(): Promise<boolean | string>;
     exists(source?: string): Promise<boolean>;
     createDir(): Promise<boolean>;

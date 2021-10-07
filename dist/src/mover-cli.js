@@ -86,14 +86,15 @@ var stringToArgs = function (rawArgs) {
 };
 function fixArgs(options) {
     return __awaiter(this, void 0, void 0, function () {
-        var questions, move, verbose, source, destination, extension, answers, handler, _a, _b, _c;
+        var questions, move, verbose, source, destination, extension, answers, bar, handler, _a, _b, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
                     questions = [];
                     move = options.move, verbose = options.verbose, source = options.directory, destination = options.folder, extension = options.extension;
                     answers = { move: move, source: source, verbose: verbose, destination: destination, extension: extension };
-                    handler = new handler_1.default(answers);
+                    bar = new logger_1.default(answers);
+                    handler = new handler_1.default(answers, bar);
                     _d.label = 1;
                 case 1:
                     if (!(options.directory === false || options.directory === 'file')) return [3 /*break*/, 4];
@@ -107,7 +108,7 @@ function fixArgs(options) {
                     return [4 /*yield*/, inquirer_1.default.prompt(questions)];
                 case 2:
                     answers = __assign.apply(void 0, _a.concat([_d.sent()]));
-                    handler = new handler_1.default(answers);
+                    handler = new handler_1.default(answers, bar);
                     _b = options;
                     return [4 /*yield*/, handler.confirm()];
                 case 3:
@@ -140,38 +141,38 @@ function fixArgs(options) {
                 case 7:
                     if (typeof answers.source === 'string' && answers.source.charAt(0) !== '/')
                         answers.source = path_1.default.join(process.cwd(), answers.source);
-                    return [2 /*return*/, { answers: answers, handler: new handler_1.default(answers) }];
+                    return [2 /*return*/, { answers: answers, bar: new logger_1.default(answers) }];
             }
         });
     });
 }
 function cli(args) {
     return __awaiter(this, void 0, void 0, function () {
-        var options, _a, answers, handler, bar, data, ffmpeg, commands, exec;
+        var options, _a, answers, bar, handler, data, ffmpeg, commands, exec;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     options = stringToArgs(args);
                     return [4 /*yield*/, fixArgs(options)];
                 case 1:
-                    _a = _b.sent(), answers = _a.answers, handler = _a.handler;
-                    bar = new logger_1.default(answers);
+                    _a = _b.sent(), answers = _a.answers, bar = _a.bar;
                     bar.show(answers);
                     bar.update(0);
                     bar.startItem('moving files');
+                    handler = new handler_1.default(answers, bar);
                     return [4 /*yield*/, handler.moveOut()];
                 case 2:
                     data = _b.sent();
                     bar.update(20 / 300);
                     bar.itemDone('moving files');
-                    ffmpeg = new ffmpeg_1.default(answers, data.files);
+                    ffmpeg = new ffmpeg_1.default(answers, data.files, bar);
                     bar.startItem('probing files');
                     return [4 /*yield*/, ffmpeg.probeFolder()];
                 case 3:
                     commands = _b.sent();
                     bar.itemDone('probing files');
                     bar.startItem('converting files');
-                    exec = new exec_1.default(answers, commands);
+                    exec = new exec_1.default(answers, commands, bar);
                     return [4 /*yield*/, exec.execCommands()];
                 case 4:
                     _b.sent();

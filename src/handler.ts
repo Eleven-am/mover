@@ -3,6 +3,7 @@ import {promisify} from 'util';
 import path from "path";
 import {Options} from "./mover-cli";
 import rename from 'locutus/php/strings/strtr';
+import Logger from "./logger";
 
 let dicDo = {
     " (1080p HD).m4v": "", " (HD).m4v": "", " (4K).m4v": "",
@@ -27,8 +28,10 @@ const stats = promisify(fs.lstat);
 export default class Handler {
     private source: string;
     private readonly options: Options;
+    private readonly bar: Logger;
 
-    constructor(options: Options) {
+    constructor(options: Options, bar: Logger) {
+        this.bar = bar;
         this.options = options;
         if (typeof options.source !== 'boolean')
             this.source = options.source;
@@ -73,6 +76,7 @@ export default class Handler {
             if (!exists)
                 fs.mkdir(this.source + '/ffmpeg', err => {
                     if (err) {
+                        this.bar.show(err);
                         resolve(false);
                     }
                 })
@@ -86,6 +90,8 @@ export default class Handler {
         let files = await readdir(this.source);
         files = files.filter(item => item.charAt(0) !== '.');
         files = files.filter(item => item.endsWith(this.options.extension as string));
+        let string = 'move option is ' + (this.options.move ? '' : 'de') + 'activated';
+        this.bar.show(string);
         return {info: true, files};
     }
 
@@ -124,6 +130,7 @@ export default class Handler {
             const match: {groups: {season?: string, episode?: string}} | null = matches;
             const fileName = match? `Season-S${match.groups.season || '??'}-Episode-E${match.groups.episode}`: realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
             const file = this.source + '/' + fileName + ext;
+            this.bar.show('moving ' + realFile);
             await renameFile(folder + '/' + realFile, file);
         }
     }

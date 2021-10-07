@@ -47,7 +47,8 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
     let questions = [];
     let {move, verbose, directory: source, folder: destination, extension} = options;
     let answers = {move, source, verbose, destination, extension};
-    let handler = new Handler(answers);
+    let bar = new Logger(answers);
+    let handler = new Handler(answers, bar);
     while (options.directory === false || options.directory === 'file') {
         questions.push({
             type: 'input',
@@ -57,7 +58,7 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
         });
 
         answers = {...answers, ...await inquirer.prompt(questions)};
-        handler = new Handler(answers);
+        handler = new Handler(answers, bar);
         options.directory = await handler.confirm();
         questions = [];
     }
@@ -84,29 +85,29 @@ async function fixArgs(options: { extension: string | boolean; move: boolean; fo
     if (typeof answers.source === 'string' && answers.source.charAt(0) !== '/')
         answers.source = path.join(process.cwd(), answers.source)
 
-    return {answers, handler: new Handler(answers)};
+    return {answers, bar: new Logger(answers)};
 }
 
 export async function cli(args: string[]) {
     let options = stringToArgs(args);
-    let {answers, handler} = await fixArgs(options);
+    let {answers, bar} = await fixArgs(options);
 
-    const bar = new Logger(answers);
     bar.show(answers)
 
     bar.update(0);
     bar.startItem('moving files');
+    const handler = new Handler(answers, bar)
     let data = await handler.moveOut();
 
     bar.update(20/300);
     bar.itemDone('moving files');
-    const ffmpeg = new Ffmpeg(answers, data.files);
+    const ffmpeg = new Ffmpeg(answers, data.files, bar);
     bar.startItem('probing files');
     let commands = await ffmpeg.probeFolder();
     bar.itemDone('probing files');
     bar.startItem('converting files');
 
-    let exec = new Execute(answers, commands);
+    let exec = new Execute(answers, commands, bar);
     await exec.execCommands();
     bar.itemDone('converting files');
     bar.update(200/300);
