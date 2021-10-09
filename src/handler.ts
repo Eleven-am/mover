@@ -114,26 +114,12 @@ export default class Handler {
                 realFiles.push('/' + file);
         }
 
-        const base = path.basename(folder);
         realFiles = realFiles.filter(item => item.endsWith(this.options.extension as string));
 
         for (let realFile of realFiles) {
             let name: string = rename(realFile, dicDo);
             const ext = path.extname(realFile);
-            let matches: any = name.match(/s(?<season>\d+).*?e(?<episode>\d+)/i);
-            if (matches === null) {
-                if (/\d{3}\s/.test(name) && !/\d{2}\s/.test(name))
-                    matches = name.match(/(?<season>\d)(?<episode>\d{2})/);
-
-                else {
-                    matches = name.match(/(\d{2})\s/g);
-                    let index = matches && matches.length ? /^\d{2}\s/.test(name) ? 0 : matches.length - 1 : 0;
-                    matches = matches && matches.length ? {groups: {episode: matches[index].replace(/\s/, '')}} : null;
-                }
-            }
-
-            const match: {groups: {season?: string, episode?: string}} | null = matches;
-            const fileName = match? `${base}S${match.groups.season || '??'}E${match.groups.episode}`: realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+            const fileName = name.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
             const file = this.source + fileName + ext;
             this.bar.show('moving ' + realFile);
             await renameFile(folder + realFile, file);

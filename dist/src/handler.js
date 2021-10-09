@@ -184,7 +184,7 @@ var Handler = /** @class */ (function () {
     };
     Handler.prototype.move = function (folder) {
         return __awaiter(this, void 0, void 0, function () {
-            var files, realFiles, files_1, files_1_1, file, temp, stat, e_1_1, base, realFiles_1, realFiles_1_1, realFile, name_1, ext, matches, index, match, fileName, file, e_2_1;
+            var files, realFiles, files_1, files_1_1, file, temp, stat, e_1_1, realFiles_1, realFiles_1_1, realFile, name_1, ext, fileName, file, e_2_1;
             var e_1, _a, e_2, _b;
             var _this = this;
             return __generator(this, function (_c) {
@@ -231,7 +231,6 @@ var Handler = /** @class */ (function () {
                         finally { if (e_1) throw e_1.error; }
                         return [7 /*endfinally*/];
                     case 11:
-                        base = path_1.default.basename(folder);
                         realFiles = realFiles.filter(function (item) { return item.endsWith(_this.options.extension); });
                         _c.label = 12;
                     case 12:
@@ -243,18 +242,7 @@ var Handler = /** @class */ (function () {
                         realFile = realFiles_1_1.value;
                         name_1 = (0, strtr_1.default)(realFile, dicDo);
                         ext = path_1.default.extname(realFile);
-                        matches = name_1.match(/s(?<season>\d+).*?e(?<episode>\d+)/i);
-                        if (matches === null) {
-                            if (/\d{3}\s/.test(name_1) && !/\d{2}\s/.test(name_1))
-                                matches = name_1.match(/(?<season>\d)(?<episode>\d{2})/);
-                            else {
-                                matches = name_1.match(/(\d{2})\s/g);
-                                index = matches && matches.length ? /^\d{2}\s/.test(name_1) ? 0 : matches.length - 1 : 0;
-                                matches = matches && matches.length ? { groups: { episode: matches[index].replace(/\s/, '') } } : null;
-                            }
-                        }
-                        match = matches;
-                        fileName = match ? base + "S" + (match.groups.season || '??') + "E" + match.groups.episode : realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+                        fileName = name_1.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
                         file = this.source + fileName + ext;
                         this.bar.show('moving ' + realFile);
                         return [4 /*yield*/, renameFile(folder + realFile, file)];
