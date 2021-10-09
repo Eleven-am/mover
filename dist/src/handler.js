@@ -184,7 +184,7 @@ var Handler = /** @class */ (function () {
     };
     Handler.prototype.move = function (folder) {
         return __awaiter(this, void 0, void 0, function () {
-            var files, realFiles, files_1, files_1_1, file, temp, stat, e_1_1, realFiles_1, realFiles_1_1, realFile, name_1, ext, matches, index, match, fileName, file, e_2_1;
+            var files, realFiles, files_1, files_1_1, file, temp, stat, e_1_1, base, realFiles_1, realFiles_1_1, realFile, name_1, ext, matches, index, match, fileName, file, e_2_1;
             var e_1, _a, e_2, _b;
             var _this = this;
             return __generator(this, function (_c) {
@@ -231,6 +231,7 @@ var Handler = /** @class */ (function () {
                         finally { if (e_1) throw e_1.error; }
                         return [7 /*endfinally*/];
                     case 11:
+                        base = path_1.default.basename(folder);
                         realFiles = realFiles.filter(function (item) { return item.endsWith(_this.options.extension); });
                         _c.label = 12;
                     case 12:
@@ -253,7 +254,7 @@ var Handler = /** @class */ (function () {
                             }
                         }
                         match = matches;
-                        fileName = match ? "Season-S" + (match.groups.season || '??') + "-Episode-E" + match.groups.episode : realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+                        fileName = match ? base + "S" + (match.groups.season || '??') + "E" + match.groups.episode : realFile.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
                         file = this.source + fileName + ext;
                         this.bar.show('moving ' + realFile);
                         return [4 /*yield*/, renameFile(folder + realFile, file)];
@@ -281,7 +282,7 @@ var Handler = /** @class */ (function () {
     };
     Handler.prototype.renameFiles = function (folder, destination) {
         return __awaiter(this, void 0, void 0, function () {
-            var files, base, files_2, files_2_1, file, temp, e_3_1;
+            var files, files_2, files_2_1, file, temp, e_3_1;
             var e_3, _a;
             var _this = this;
             return __generator(this, function (_b) {
@@ -292,7 +293,6 @@ var Handler = /** @class */ (function () {
                         return [4 /*yield*/, readdir(folder)];
                     case 1:
                         files = _b.sent();
-                        base = path_1.default.basename(folder);
                         files = files.filter(function (item) { return item.charAt(0) !== '.'; });
                         files = files.filter(function (item) { return item.endsWith(_this.options.extension); });
                         _b.label = 2;
@@ -304,7 +304,7 @@ var Handler = /** @class */ (function () {
                         if (!!files_2_1.done) return [3 /*break*/, 6];
                         file = files_2_1.value;
                         temp = folder + '/' + file;
-                        file = destination + '/' + base + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
+                        file = destination + '/' + file.replace(/\[.*?]\s*|-|\(.*?\)/g, '').replace(/\s+/g, '.').replace(/\.{2,}/, '.');
                         return [4 /*yield*/, renameFile(temp, file)];
                     case 4:
                         _b.sent();
