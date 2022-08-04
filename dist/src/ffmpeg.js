@@ -62,11 +62,11 @@ var Ffmpeg = /** @class */ (function () {
     Ffmpeg.prototype.probe = function (file) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
+                return [2 /*return*/, new Promise(function (resolve) {
                         (0, ffprobe_1.default)(file, { path: ffprobe_static_1.default.path })
                             .then(function (info) {
                             resolve(info);
-                        }).catch(function (err) { return reject(null); });
+                        }).catch(function (_) { return resolve(null); });
                     })];
             });
         });
@@ -92,7 +92,9 @@ var Ffmpeg = /** @class */ (function () {
                         return [4 /*yield*/, this.probe(file)];
                     case 3:
                         res = _d.sent();
-                        probe = (res || { streams: [] }).streams.map(function (stream) {
+                        if (res === null)
+                            return [3 /*break*/, 4];
+                        probe = res.streams.map(function (stream) {
                             return {
                                 index: stream.index,
                                 codec_type: stream.codec_type,
@@ -114,7 +116,7 @@ var Ffmpeg = /** @class */ (function () {
                         command = this.build(item, codecs, length_1);
                         if (command !== false)
                             commands.push({ command: command, item: item });
-                        this.bar.show(probe);
+                        this.bar.show('probing ' + item);
                         start += this.speed / 300;
                         this.bar.update(start);
                         _d.label = 4;
