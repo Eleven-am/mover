@@ -26,11 +26,11 @@ export default class Ffmpeg {
     }
 
     async probe(file: string) {
-        return new Promise<FFProbeResult | null>((resolve, reject) => {
+        return new Promise<FFProbeResult | null>((resolve) => {
             ffprobe(file, {path: ffprobeStatic.path})
                 .then(function (info) {
                     resolve(info);
-                }).catch(err => reject(null))
+                }).catch(_ => resolve(null))
         })
     }
 
@@ -40,7 +40,11 @@ export default class Ffmpeg {
         for (let item of this.files) {
             let file = this.options.source + '/' + item;
             let res = await this.probe(file);
-            let probe: Codecs[] = (res || {streams: []}).streams.map(stream => {
+
+            if (res === null)
+                continue;
+
+            let probe: Codecs[] = res.streams.map(stream => {
                 return {
                     index: stream.index,
                     codec_type: stream.codec_type,
@@ -67,7 +71,7 @@ export default class Ffmpeg {
             if (command !== false)
                 commands.push({command, item});
 
-            this.bar.show(probe);
+            this.bar.show({...probe, file: item});
             start += this.speed/300;
             this.bar.update(start);
         }

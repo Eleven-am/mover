@@ -16,6 +16,7 @@
     "esm": "^3.2.25",
     "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "inquirer": "^8.2.0",
     "locutus": "^2.0.15",
     "terminal-kit": "^2.1.6"
