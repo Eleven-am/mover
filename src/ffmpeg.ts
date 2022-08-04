@@ -71,7 +71,7 @@ export default class Ffmpeg {
             if (command !== false)
                 commands.push({command, item});
 
-            this.bar.show({...probe, file: item});
+            this.bar.show('probing ' + item);
             start += this.speed/300;
             this.bar.update(start);
         }
